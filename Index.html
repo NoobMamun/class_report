@@ -1,0 +1,122 @@
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { YearComparisonCard } from "@/components/dashboard/YearComparisonCard";
+import { YearlyComparisonChart } from "@/components/dashboard/YearlyComparisonChart";
+import { MonthlyTrendComparison } from "@/components/dashboard/MonthlyTrendComparison";
+import { SegmentComparisonTable } from "@/components/dashboard/SegmentComparisonTable";
+import { SegmentYoYCards } from "@/components/dashboard/SegmentYoYCards";
+import { RecordShootComparison } from "@/components/dashboard/RecordShootComparison";
+import { IssueBreakdownBars } from "@/components/dashboard/IssueBreakdownBars";
+import { TopCoursesTable } from "@/components/dashboard/TopCoursesTable";
+import { DetailedBreakdownTable } from "@/components/dashboard/DetailedBreakdownTable";
+import { yearlyTotals, yearlyComparison } from "@/data/reportData";
+import { BookOpen, CheckCircle2, AlertTriangle, TrendingUp, Video, XCircle } from "lucide-react";
+
+const Index = () => {
+  const growth = ((yearlyComparison.year2025.totalLiveClasses - yearlyComparison.year2024.totalLiveClasses) / yearlyComparison.year2024.totalLiveClasses * 100);
+  const recordGrowth = ((yearlyComparison.year2025.totalRecordShoots - yearlyComparison.year2024.totalRecordShoots) / yearlyComparison.year2024.totalRecordShoots * 100);
+  const cancelledChange = ((yearlyComparison.year2025.cancelledPaid - yearlyComparison.year2024.cancelledPaid) / yearlyComparison.year2024.cancelledPaid * 100);
+  
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Header */}
+        <DashboardHeader />
+        
+        {/* Year Comparison Badge */}
+        <div className="mb-6 flex items-center justify-center gap-3">
+          <span className="rounded-full bg-muted px-4 py-1.5 text-sm font-medium text-muted-foreground">
+            2024
+          </span>
+          <span className="text-muted-foreground">vs</span>
+          <span className="rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground">
+            2025
+          </span>
+        </div>
+        
+        {/* KPI Cards with Year Comparison */}
+        <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <YearComparisonCard
+            title="Total LIVE Classes"
+            value2025={yearlyComparison.year2025.totalLiveClasses.toLocaleString()}
+            value2024={yearlyComparison.year2024.totalLiveClasses.toLocaleString()}
+            icon={BookOpen}
+            changePercent={growth}
+            isPositive={growth > 0}
+            variant="primary"
+            delay={0}
+          />
+          <YearComparisonCard
+            title="Record Shoot"
+            value2025={yearlyComparison.year2025.totalRecordShoots.toLocaleString()}
+            value2024={yearlyComparison.year2024.totalRecordShoots.toLocaleString()}
+            icon={Video}
+            changePercent={recordGrowth}
+            isPositive={recordGrowth > 0}
+            variant="info"
+            delay={50}
+          />
+          <YearComparisonCard
+            title="Cancelled (Paid)"
+            value2025={yearlyComparison.year2025.cancelledPaid}
+            value2024={yearlyComparison.year2024.cancelledPaid}
+            icon={XCircle}
+            changePercent={cancelledChange}
+            isPositive={cancelledChange < 0}
+            variant="accent"
+            delay={100}
+          />
+          <YearComparisonCard
+            title="Cancelled (Promo)"
+            value2025={yearlyComparison.year2025.cancelledPromo}
+            value2024={yearlyComparison.year2024.cancelledPromo}
+            icon={AlertTriangle}
+            changePercent={((yearlyComparison.year2025.cancelledPromo - yearlyComparison.year2024.cancelledPromo) / yearlyComparison.year2024.cancelledPromo * 100)}
+            isPositive={false}
+            variant="warning"
+            delay={150}
+          />
+        </section>
+        
+        {/* Charts Row 1 - Main Comparison */}
+        <section className="mb-8 grid gap-6 lg:grid-cols-2">
+          <YearlyComparisonChart />
+          <MonthlyTrendComparison />
+        </section>
+        
+        {/* Segment Comparison Table */}
+        <section className="mb-8">
+          <SegmentComparisonTable />
+        </section>
+        
+        {/* Charts Row 2 - Segment Performance */}
+        <section className="mb-8 grid gap-6 lg:grid-cols-2">
+          <SegmentYoYCards />
+          <RecordShootComparison />
+        </section>
+        
+        {/* Issue Breakdown */}
+        <section className="mb-8 grid gap-6 lg:grid-cols-2">
+          <IssueBreakdownBars />
+          <TopCoursesTable />
+        </section>
+        
+        {/* Detailed Table */}
+        <section className="mb-8">
+          <DetailedBreakdownTable />
+        </section>
+        
+        {/* Footer */}
+        <footer className="mt-12 border-t border-border pt-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            Class Operations Team Yearly Report • 2024 vs 2025 Comparison
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+export default Index;
